@@ -35,6 +35,7 @@ function plotECG(t, ECGsignal, locs, q_locs, s_locs, pks, titleText)
     figure; plot(t, ECGsignal, t(locs), pks, 'ro', 'MarkerFaceColor', 'r');
     hold on; plot(t(q_locs), ECGsignal(q_locs), 'ks', 'MarkerFaceColor', 'b');
     plot(t(s_locs), ECGsignal(s_locs), 'ks', 'MarkerFaceColor', 'g');
+    plot()
     xlabel('Time (s)'); ylabel('Amplitude'); title(titleText);
     legend('ECG Signal', 'R Peaks', 'Estimated Q Points', 'Estimated S Points'); hold off;
 end
