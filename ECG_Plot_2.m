@@ -1,5 +1,38 @@
 clc; clear; close all;
 
+try
+    % Attempt to load the file
+    data = load('101m.mat');
+    
+    % Check if the file contains the expected variables
+    % Assuming 'val' is the expected variable in the ECG file
+    if isfield(data, 'val')
+        ECGsignal = data.val;
+        
+        % Additional checks can be added here, for example:
+        % - Check if the signal is non-empty
+        % - Check if the signal has a reasonable size or range of values
+        if isempty(ECGsignal)
+            error('ECG signal is empty.');
+        end
+
+        % Further processing of ECGsignal can be done here
+
+        disp('ECG file loaded successfully and data is valid.');
+    else
+        error('Expected variable ''val'' not found in the file.');
+    end
+catch ME
+    % Handle different types of errors
+    switch ME.identifier
+        case 'MATLAB:load:couldNotReadFile'
+            disp('Error: File does not exist or cannot be read.');
+        case 'MATLAB:nonExistentField'
+            disp('Error: The file does not contain the expected data.');
+        otherwise
+            disp(['Error: ', ME.message]);
+    end
+end
 load('101m.mat');
 ECGsignal = val(1,:) - mean(val(1,:));
 Fs = 360; t = (0:length(ECGsignal)-1) / Fs;
@@ -79,8 +112,8 @@ function plotECG(t, ECGsignal, locs, q_locs, s_locs, pks, titleText, Fs)
         if ~isempty(accumulatedLocs)
            [current_heart_rate] =analyzeHeartRate(accumulatedLocs, Fs);
             %disp(['print heart beat ', num2str(current_heart_rate)]);
-            analyzeArrhythmia(t, accumulatedLocs, diff(accumulatedLocs)/Fs);
-            analyzeSTPR(t, accumulatedLocs, s_locs - q_locs, diff(accumulatedLocs)/Fs, Fs);
+          %  analyzeArrhythmia(t, accumulatedLocs, diff(accumulatedLocs)/Fs);
+          %  analyzeSTPR(t, accumulatedLocs, s_locs - q_locs, diff(accumulatedLocs)/Fs, Fs);
         end
 
         pause(bufferTime); % Pause for the duration of the buffered time
@@ -108,13 +141,13 @@ function current_heart_rate=analyzeHeartRate(locs, Fs)
         subplot(2,1,2); % Select the second subplot for plotting
         plot(times, heart_rates, 'm-o'); % Plot heart rate over time
         ylabel('Heart Rate (BPM)');
-        disp(['Current Heart Rate: ', num2str(current_heart_rate), ' BPM']);
+       % disp(['Current Heart Rate: ', num2str(current_heart_rate), ' BPM']);
     elseif length(locs) == 1
         % Only one R peak detected, insufficient for heart rate calculation
-        disp('Awaiting additional data for heart rate calculation...');
+       % disp('Awaiting additional data for heart rate calculation...');
     else
         % No R peaks detected yet
-        disp('No heart rate data available yet.');
+       % disp('No heart rate data available yet.');
     end
 end
 
